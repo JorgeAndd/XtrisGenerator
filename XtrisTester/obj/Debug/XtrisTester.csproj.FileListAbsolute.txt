@@ -1,0 +1,9 @@
+E:\Programming\C#\XtrisGenerator\XtrisTester\bin\Debug\XtrisTester.dll
+E:\Programming\C#\XtrisGenerator\XtrisTester\bin\Debug\XtrisTester.pdb
+E:\Programming\C#\XtrisGenerator\XtrisTester\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+E:\Programming\C#\XtrisGenerator\XtrisTester\bin\Debug\XtrisGenerator.exe
+E:\Programming\C#\XtrisGenerator\XtrisTester\bin\Debug\XtrisGenerator.pdb
+E:\Programming\C#\XtrisGenerator\XtrisTester\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.xml
+E:\Programming\C#\XtrisGenerator\XtrisTester\obj\Debug\XtrisTester.csprojResolveAssemblyReference.cache
+E:\Programming\C#\XtrisGenerator\XtrisTester\obj\Debug\XtrisTester.dll
+E:\Programming\C#\XtrisGenerator\XtrisTester\obj\Debug\XtrisTester.pdb

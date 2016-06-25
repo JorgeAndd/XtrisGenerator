@@ -1,0 +1,6 @@
+E:\Programming\C#\XtrisGenerator\XtrisGenerator\bin\Debug\XtrisGenerator.exe.config
+E:\Programming\C#\XtrisGenerator\XtrisGenerator\bin\Debug\XtrisGenerator.exe
+E:\Programming\C#\XtrisGenerator\XtrisGenerator\bin\Debug\XtrisGenerator.pdb
+E:\Programming\C#\XtrisGenerator\XtrisGenerator\obj\Debug\XtrisGenerator.csprojResolveAssemblyReference.cache
+E:\Programming\C#\XtrisGenerator\XtrisGenerator\obj\Debug\XtrisGenerator.exe
+E:\Programming\C#\XtrisGenerator\XtrisGenerator\obj\Debug\XtrisGenerator.pdb

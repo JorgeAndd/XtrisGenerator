@@ -48,5 +48,80 @@ namespace XtrisTester
 
 			CollectionAssert.AreEqual(expected, piece.board);
 		}
+
+		[TestMethod]
+		public void TestEqual()
+		{
+			Piece p1 = new Piece(new char[,]{ { ' ', 'x', 'x', 'x' },
+											  { ' ', ' ', 'x', ' ' },
+											  { ' ', ' ', ' ', ' ' },
+											  { ' ', ' ', ' ', ' ' }});
+
+			Piece p2 = new Piece(new char[,]{ { ' ', ' ', ' ', ' ' },
+											  { 'x', 'x', 'x', 'x' },
+											  { ' ', ' ', ' ', ' ' },
+											  { ' ', ' ', ' ', ' ' }});
+
+			Piece p3 = new Piece(new char[,]{ { ' ', ' ', ' ', ' ' },
+											  { ' ', ' ', ' ', ' ' },
+											  { ' ', ' ', ' ', ' ' },
+											  { 'x', 'x', 'x', 'x' }});
+
+			Piece p4 = new Piece(new char[,]{ { ' ', ' ', ' ', ' ' },
+											  { ' ', 'x', 'x', ' ' },
+											  { ' ', 'x', 'x', ' ' },
+											  { ' ', ' ', ' ', ' ' }});
+
+			Piece p5 = new Piece(new char[,]{ { 'x', 'x', ' ', ' ' },
+											  { 'x', 'x', ' ', ' ' },
+											  { ' ', ' ', ' ', ' ' },
+											  { ' ', ' ', ' ', ' ' }});
+
+			Assert.AreEqual(false, p1 == p2);
+			Assert.AreEqual(true, p2 == p3);
+			Assert.AreEqual(true, p4 == p5);
+			Assert.AreEqual(false, p1 == p5);
+		}
+
+		[TestMethod]
+		public void TestEqualWithRotation()
+		{
+			Piece p1 = new Piece(new char[,]{ { 'x', 'x', 'x', 'x' },
+											  { ' ', ' ', ' ', ' ' },
+											  { ' ', ' ', ' ', ' ' },
+											  { ' ', ' ', ' ', ' ' }});
+
+			Piece p2 = new Piece(new char[,]{ { 'x', ' ', ' ', ' ' },
+											  { 'x', ' ', ' ', ' ' },
+											  { 'x', ' ', ' ', ' ' },
+											  { 'x', ' ', ' ', ' ' }});
+
+			Assert.AreEqual(true, p1 == p2);
+
+			Piece p3 = new Piece(new char[,]{ { ' ', 'x', 'x', 'x' },
+											  { ' ', ' ', 'x', ' ' },
+											  { ' ', ' ', ' ', ' ' },
+											  { ' ', ' ', ' ', ' ' }});
+
+			Piece p4 = new Piece(new char[,]{ { ' ', ' ', ' ', ' ' },
+											  { 'x', ' ', ' ', ' ' },
+											  { 'x', 'x', ' ', ' ' },
+											  { 'x', ' ', ' ', ' ' }});
+
+			Assert.AreEqual(true, p3 == p4);
+
+			Piece p5 = new Piece(new char[,]{ { ' ', ' ', 'x', 'x' },
+											  { ' ', 'x', 'x', ' ' },
+											  { ' ', ' ', ' ', ' ' },
+											  { ' ', ' ', ' ', ' ' }});
+
+			Piece p6 = new Piece(new char[,]{ { ' ', 'x', ' ', ' ' },
+											  { ' ', 'x', 'x', ' ' },
+											  { ' ', ' ', 'x', ' ' },
+											  { ' ', ' ', ' ', ' ' }});
+
+			Assert.AreEqual(true, p5 == p6);
+
+		}
 	}
 }
