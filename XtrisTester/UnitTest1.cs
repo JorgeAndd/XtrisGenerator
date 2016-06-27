@@ -50,6 +50,24 @@ namespace XtrisTester
 		}
 
 		[TestMethod]
+		public void ValidRotation()
+		{
+			Piece p1 = new Piece(new char[,]{ { 'x', 'x', ' ', ' ' },
+											  { 'x', 'x', ' ', ' ' },
+											  { ' ', ' ', ' ', ' ' },
+											  { ' ', ' ', ' ', ' ' }});
+
+			p1.Rotate();
+
+			Piece p2 = new Piece(new char[,]{ { ' ', ' ', ' ', ' ' },
+											  { ' ', ' ', ' ', ' ' },
+											  { 'x', 'x', ' ', ' ' },
+											  { 'x', 'x', ' ', ' ' }});
+
+			CollectionAssert.AreEqual(p1.board, p2.board);
+		}
+
+		[TestMethod]
 		public void TestEqual()
 		{
 			Piece p1 = new Piece(new char[,]{ { ' ', 'x', 'x', 'x' },
