@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 namespace XtrisGenerator
 {
 	public enum Direction { Up, Right, Down, Left};
+	public enum Diagonal { UpLeft, UpRight, DownRight, DownLeft};
 
-	public struct Point
+	public class Point
 	{
 		public int x;
 		public int y;
@@ -38,6 +39,33 @@ namespace XtrisGenerator
 				case Direction.Left:
 					this.x = point.x - 1;
 					this.y = point.y;
+					break;
+				default:
+					this.x = -1;
+					this.y = -1;
+					break;
+			}
+		}
+
+		public Point(Point point, Diagonal diag)
+		{
+			switch (diag)
+			{
+				case Diagonal.UpLeft:
+					this.x = point.x - 1;
+					this.y = point.y - 1;
+					break;
+				case Diagonal.UpRight:
+					this.x = point.x + 1;
+					this.y = point.y - 1;
+					break;
+				case Diagonal.DownRight:
+					this.x = point.x + 1;
+					this.y = point.y + 1;
+					break;
+				case Diagonal.DownLeft:
+					this.x = point.x - 1;
+					this.y = point.y + 1;
 					break;
 				default:
 					this.x = -1;
@@ -101,8 +129,8 @@ namespace XtrisGenerator
 			if (p1.dimension != p2.dimension)
 				return false;
 
-			Point? firstBlock1;
-			Point? firstBlock2;
+			Point firstBlock1;
+			Point firstBlock2;
 
 			List<Point> blocks1 = new List<Point>(p1.dimension);
 			List<Point> blocks2 = new List<Point>(p2.dimension);
@@ -144,8 +172,8 @@ namespace XtrisGenerator
 				}
 
 				// Calculate the offset from the top rightmost block
-				int offset_x = firstBlock1.Value.x - firstBlock2.Value.x;
-				int offset_y = firstBlock1.Value.y - firstBlock2.Value.y;
+				int offset_x = firstBlock1.x - firstBlock2.x;
+				int offset_y = firstBlock1.y - firstBlock2.y;
 
 				bool different = false;
 
@@ -208,57 +236,113 @@ namespace XtrisGenerator
 			}
 		}
 
+
+
+		/// <summary>
+		/// Checks if a board is valid
+		///  ie. if every block has a neighbor block in positions up, right, down or left
+		///  (blocks cannot be neighbors of only diagonal blocks)
+		/// </summary>
+		/// <param name="newestBlock">block to be checked. If not passed, will check the whole board</param>
+		/// <returns>True if board is valid</returns>
+		private static bool IsValid(char[,] board, Point newestBlock = null)
+		{
+			var dimension = board.GetLength(0);
+
+			if (newestBlock != null)
+			{
+				Point neighbor = null;
+
+				// Checks if any neighbor(up, right, down, left) contains a block
+				foreach (Direction dir in Enum.GetValues(typeof(Direction))) {
+					neighbor = new Point(newestBlock, dir);
+					if (neighbor.IsValid(dimension) && board[neighbor.x, neighbor.y] == 'x')
+						return true;
+				}
+
+				return false;
+			}
+			else
+			{
+				for(var i = 0; i < dimension; i++)
+				{
+					for(var j = 0; j < dimension; j++)
+					{
+						Point block = new Point(i, j);
+						Point neighbor = null;
+
+						// Checks if any neighbor(up, right, down, left) contains a block
+						foreach (var dir in Enum.GetValues(typeof(Direction)))
+						{
+							neighbor = new Point(block, Direction.Up);
+							if (neighbor.IsValid(dimension) && board[neighbor.x, neighbor.y] == 'x')
+								return true;
+						}
+
+						return false;
+					}
+				}
+			}
+
+			return false;
+		}
+
 		public static List<Piece> GeneratePieces(int nblocks)
 		{
 			var pieces = new List<Piece>();
 			var zeroedBoard = new char[nblocks, nblocks];
 			Piece.ZeroBoard(ref zeroedBoard);
 
-			RecursiveGeneration(new Point(0, 1), zeroedBoard, nblocks, ref pieces);
+			RecursiveGeneration(new Point(0, nblocks/2), zeroedBoard, nblocks, ref pieces);
 
 			return pieces;
 		}
 
 		private static void RecursiveGeneration(Point point, char[,] board, int remaining, ref List<Piece> pieces)
 		{
+			// Check if new block is valid
+			// Don't check for first block
+
+			var dimension = board.GetLength(0);
+			if (remaining < dimension)
+			{
+				if(IsValid(board, point) == false)
+				{
+					return;
+				}
+			}
+
 			board[point.x, point.y] = 'x';
+
 			remaining--;
 
 			if (remaining > 0)
 			{
-				var dimension = board.GetLength(0);
+				Point newPoint = null;
 
-				// Up
-				var newPoint = new Point(point, Direction.Up);
-				if (newPoint.IsValid(dimension) && board[newPoint.x, newPoint.y] == ' ')
+				// Generate blocks on directions up, right, down and left
+				foreach (Direction dir in Enum.GetValues(typeof(Direction)))
 				{
-					RecursiveGeneration(newPoint, board, remaining, ref pieces);
-					board[newPoint.x, newPoint.y] = ' ';
+					newPoint = new Point(point, dir);
+					if (newPoint.IsValid(dimension) && board[newPoint.x, newPoint.y] == ' ')
+					{
+						RecursiveGeneration(newPoint, board, remaining, ref pieces);
+						board[newPoint.x, newPoint.y] = ' ';
+					}
 				}
 
-				// Right
-				newPoint = new Point(point, Direction.Right);
-				if (newPoint.IsValid(dimension) && board[newPoint.x, newPoint.y] == ' ')
+				// Generate pieces on diagonals
+				foreach(Diagonal diag in Enum.GetValues(typeof(Diagonal)))
 				{
-					RecursiveGeneration(newPoint, board, remaining, ref pieces);
-					board[newPoint.x, newPoint.y] = ' ';
+					newPoint = new Point(point, diag);
+					if (newPoint.IsValid(dimension) && board[newPoint.x, newPoint.y] == ' ')
+					{
+						RecursiveGeneration(newPoint, board, remaining, ref pieces);
+						board[newPoint.x, newPoint.y] = ' ';
+					}
 				}
 
-				// Down
-				newPoint = new Point(point, Direction.Down);
-				if (newPoint.IsValid(dimension) && board[newPoint.x, newPoint.y] == ' ')
-				{
-					RecursiveGeneration(newPoint, board, remaining, ref pieces);
-					board[newPoint.x, newPoint.y] = ' ';
-				}
 
-				// Left
-				newPoint = new Point(point, Direction.Left);
-				if (newPoint.IsValid(dimension) && board[newPoint.x, newPoint.y] == ' ')
-				{
-					RecursiveGeneration(newPoint, board, remaining, ref pieces);
-					board[newPoint.x, newPoint.y] = ' ';
-				}
 			}
 			else
 			{
@@ -276,7 +360,6 @@ namespace XtrisGenerator
 			}
 		}
 
-		
 		public static void ZeroBoard(ref char[,] arr)
 		{
 			for (int i = 0; i < arr.GetLength(0); i++)
@@ -293,8 +376,25 @@ namespace XtrisGenerator
 	{
 		static void Main(string[] args)
 		{
-			var pieces = Piece.GeneratePieces(4);
+			var size = 6;
+			var pieces = Piece.GeneratePieces(size);
 
+			foreach(var piece in pieces)
+			{
+				for(var i = 0; i < size; i++)
+				{
+					for (int j = 0; j < size; j++)
+					{
+						Console.Write(string.Format("{0} ", piece.board[i, j]));
+					}
+					Console.Write("\n");
+				}
+
+				Console.Write("============================\n");
+				
+			}
+
+			Console.ReadLine();
 			return;
 
 		}

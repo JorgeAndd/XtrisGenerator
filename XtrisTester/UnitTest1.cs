@@ -141,5 +141,17 @@ namespace XtrisTester
 			Assert.AreEqual(true, p5 == p6);
 
 		}
+
+		[TestMethod]
+		public void TestNumberOfPieces()
+		{
+			var size = 4;
+			var pieces = Piece.GeneratePieces(size);
+			Assert.AreEqual(7, pieces.Count);
+
+			size = 5;
+			pieces = Piece.GeneratePieces(size);
+			Assert.AreEqual(18, pieces.Count);
+		}
 	}
 }
